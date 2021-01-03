@@ -33,6 +33,18 @@ bpy.types.Scene.tract_file = StringProperty(name="Tract source file",
                subtype="FILE_PATH", 
                description="Location of the tract source file in UTF-8 plaintext format")
 
+bpy.types.Scene.group_count = IntProperty(name="Group count", 
+               subtype="UNSIGNED", 
+               description="The total count of all tract groups.")
+
+bpy.types.Scene.tract_count = IntProperty(name="Tract count", 
+               subtype="UNSIGNED", 
+               description="The total count of all tracts.")
+
+bpy.types.Scene.vertex_count = IntProperty(name="Vertex count", 
+               subtype="UNSIGNED", 
+               description="The total count of all vertices in all tracts.")
+
 classes = (Biab_PlotTracts, Biab_CenterCursor, Biab_Panel)
 
 register, unregister = bpy.utils.register_classes_factory(classes)

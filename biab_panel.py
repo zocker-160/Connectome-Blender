@@ -17,10 +17,16 @@ class Biab_Panel(bpy.types.Panel):
             row.prop(context.scene, "tract_file", text="")
 
             row = layout.row()
-            row.operator('curve.plot_tracts', text="Plot tract curves")
+            row.label(text="Groups: " + str(context.scene.group_count))
 
             row = layout.row()
-            row.label(text="Additional operations:")
+            row.label(text="Tracts: " + str(context.scene.tract_count))
 
             row = layout.row()
-            row.operator('view3d.cursor_center', text="Center 3D Cursor")
+            row.label(text="Vectors: " + str(context.scene.vertex_count))
+
+            row = layout.row()
+            row.operator('curve.plot_tracts', text="Calculate tract data")
+
+            row = layout.row()
+            row.operator('curve.plot_tracts', text="Plot tract as curves")

@@ -6,34 +6,26 @@ class Biab_PlotTracts(bpy.types.Operator):
     bl_label = "Plot Tracts"
     bl_description = "Plot tracts from connectome source file in bezier curves"
 
-    def getTracts(self, tract_file):
-        tract_file_data = tract_file.read()
-        tracts = re.split('\n\d\n', tract_file_data)
-        return tracts
+    def execute(self, context):
+        tract_file = open(context.scene.tract_file,"r")
+        file_data = re.split(r"\n(\d)\n", tract_file.read())
+        groups = [0]
 
-    def getCoords3d(self, tract):
-        coords_list = re.findall('(?!\d+\n)((\d+(\.\d*)?\s){3})', tract)       # get all 3D coordinates from text
-        coords3d = []
-        for i in range(0, len(coords_list)):
-            coords = coords_list[i][0].split()
-            vector3d = []
-            for c in range(0, len(coords)):       # convert coordinates from str to int
-                coordsFloat = float(coords[c])
-                if len(vector3d) == 2:
-                    vector3d.append(coordsFloat)
-                    coords3d.append(tuple((vector3d[0],vector3d[1],vector3d[2],)))
-                    print("Vector " + str(i) + ": " + str(vector3d))
-                    vector3d = []
-                else:
-                    vector3d.append(coordsFloat)
-        return coords3d
+        for d in file_data:
+            #if len(t) <2 then append as group if not found already
+            self.makeCurve(d, groups[-1])
+        
+        self.updateCalculations(context, groups, file_data)
 
-    def makeCurve(self, tract):
-        # create the curve
+        print("Connectome plotting completed!")
+        return {'FINISHED'}
+
+    def makeCurve(self, tract, group):
         curveData = bpy.data.curves.new('myCurve', type='CURVE')
         curveData.dimensions = '3D'
         curveObj = curveData.splines.new('NURBS')
-        coords3d = self.getCoords3d(tract)
+        
+        coords3d = self.getTractCoords(tract)
 
         curveObj.points.add(len(coords3d))
         for i in coords3d:
@@ -41,19 +33,32 @@ class Biab_PlotTracts(bpy.types.Operator):
                 x,y,z = coords
                 curveObj.points[i].co = (x, y, z, 1)
 
-        # create object, attach to scene
-        tract = bpy.data.objects.new('Tract Curve', curveData)
-        bpy.context.collection.objects.link(tract)
+        curve = bpy.data.objects.new('Tract Curve', curveData)
+        bpy.context.collection.objects.link(curve)
+        # add curve to latest group. create this group if necessary
 
-        # finally, add tract to a collection by group, using a new function and regex search, so that this too runs once per tract.
+    def getTractCoords(self, tract):
+        coords_list = re.findall(r"((\d+(\.\d*)?\s){3})", tract)       # get all 3D coordinates from tract data
+        tract_vertices = []
 
+        for i in range(0, len(coords_list)):
+            coords = coords_list[i][0].split()
+            vertex = []
+            for c in range(0, len(coords)):       # convert coordinates from str to int
+                coordsFloat = float(coords[c])
+                if len(vertex) == 2:
+                    vertex.append(coordsFloat)
+                    tract_vertices.append(tuple((vertex[0],vertex[1],vertex[2],)))
+                    print("Vector " + str(i) + ": " + str(vertex))
+                    vertex = []
+                else:
+                    vertex.append(coordsFloat)
 
-    def execute(self, context):
-        tract_file = open(context.scene.tract_file,"r")
-        tracts = self.getTracts(tract_file)
+        return tract_vertices
 
-        for t in tracts:
-            print("\nNow importing tract: " + str(tracts.index(t)))
-            self.makeCurve(t)
+    def updateCalculations(self, context, groups, file_data):
+        context.scene.group_count = len(groups)
+        context.scene.tract_count = len(file_data)
+        context.scene.vertex_count = len(self.getTractCoords(str(file_data)))
 
-        return {'FINISHED'}
+        return
