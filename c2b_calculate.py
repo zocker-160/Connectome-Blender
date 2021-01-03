@@ -1,7 +1,7 @@
 import bpy
 import re
 
-class Biab_Calculate(bpy.types.Operator):
+class C2b_Calculate(bpy.types.Operator):
     bl_idname = "curve.plot_tracts"
     bl_label = "Plot Tracts"
     bl_description = "Plot tracts from connectome source file in bezier curves"

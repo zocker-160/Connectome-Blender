@@ -1,9 +1,9 @@
 import bpy
 
-class Biab_Panel(bpy.types.Panel):
-    bl_idname = "BIAB_PT_Panel"
-    bl_label = "Brain in a Blender"
-    bl_category = "Brain in a Blender"
+class C2b_Panel(bpy.types.Panel):
+    bl_idname = "C2B_PT_Panel"
+    bl_label = "Connectome→Blender"
+    bl_category = "Connectome→Blender"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 

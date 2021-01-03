@@ -25,9 +25,9 @@ bl_info = {
 import bpy
 from bpy.props import *     #   Additional Blender operation Properties
 
-from . biab_plot_tracts import *
-from . biab_center_cursor import Biab_CenterCursor
-from . biab_panel import Biab_Panel
+from . c2b_plot_tracts import *
+from . c2b_center_cursor import C2b_CenterCursor
+from . c2b_panel import C2b_Panel
 
 bpy.types.Scene.tract_file = StringProperty(name="Tract source file", 
                subtype="FILE_PATH", 
@@ -45,6 +45,6 @@ bpy.types.Scene.vertex_count = IntProperty(name="Vertex count",
                subtype="UNSIGNED", 
                description="The total count of all vertices in all tracts.")
 
-classes = (Biab_PlotTracts, Biab_CenterCursor, Biab_Panel)
+classes = (C2b_PlotTracts, C2b_CenterCursor, C2b_Panel)
 
 register, unregister = bpy.utils.register_classes_factory(classes)

@@ -1,6 +1,6 @@
 import bpy
 
-class Biab_CenterCursor(bpy.types.Operator):
+class C2b_CenterCursor(bpy.types.Operator):
     bl_idname = "view3d.cursor_center"
     bl_label = "Simple test operator"
     bl_description = "Center 3D cursor"
