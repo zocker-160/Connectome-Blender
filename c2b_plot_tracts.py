@@ -20,7 +20,7 @@ class C2b_PlotTracts(bpy.types.Operator):
                 if(int(d) not in self.groups):
                     self.groups.append(int(d))
                     bpy.ops.collection.create(name="Tract " + str(d))
-                    print("Creating collection.")
+                    #print("Creating collection.")
                     #last_curve.collection_link(collection=self.groups[-1])
                 #else:
                     #last_curve.collection_link(collection=self.groups[-1])
