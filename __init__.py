@@ -24,6 +24,7 @@ bl_info = {
 
 import bpy
 from bpy.props import *     # Additional Blender operation Properties
+from bpy_extras.io_utils import ImportHelper
 
 from . c2b_plot_tracts import *
 from . c2b_parser import *
@@ -34,6 +35,24 @@ bpy.types.Scene.tract_file = StringProperty(name="Tract source file",
                subtype="FILE_PATH", 
                description="Location of the tract source file in UTF-8 plaintext format")
 
-classes = [PlotTracts, Parser, Panel]
+class Importer(bpy.types.Operator, ImportHelper):
+    bl_idname = "c2b.import"
+    bl_label = "import tracts"
+
+    filename_ext = ".txt"
+
+    filter_glob: StringProperty(
+        default="*.txt",
+        maxlen=255
+    )
+
+    def execute(self, context: bpy.types.Context):
+        print("importing file:", self.filepath)
+        context.scene["tract_file"] = self.filepath
+        bpy.ops.c2b.parse() # trigger parser
+
+        return {'FINISHED'}
+
+classes = [PlotTracts, Parser, Panel, Importer]
 
 register, unregister = bpy.utils.register_classes_factory(classes)
