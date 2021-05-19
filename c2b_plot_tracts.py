@@ -1,92 +1,93 @@
+import importlib
 import bpy
 import re
+from . import c2b_parser
 
-class C2b_PlotTracts(bpy.types.Operator):
-    bl_idname = "curve.plot_tracts"
+class PlotTracts(bpy.types.Operator):
+    bl_idname = "c2b.plot_tracts"
     bl_label = "Plot Tracts"
     bl_description = "Plot tracts from connectome source file in bezier curves"
 
-    groups = []
-    file_data = []
-
     def execute(self, context):
-        tract_file = open(context.scene.tract_file,"r")
-        self.file_data = re.split(r"\s\n(\d)\n?", tract_file.read())
-        self.file_data.pop() # remove last regex find because it's an empty group, see re.split documentation for more info
-        print(self.file_data)
+        # Reset group variable and open/parse curve data:
+        groups = []
+        curves = c2b_parser.Parser.getCurves(c2b_parser.Parser)
 
-        new_collection = []
+        # Plot each dataset retrieved from the file data's regex results:
+        for g in curves:
+            # Plot curve:
+            print("Now plotting a curve in tract ID [" + str(g[1]) + "], using vector set:\n" + str(g[0]))
+            context.view_layer.objects.active = self.makeCurve(g[0])
+            current_curve = context.view_layer.objects.active
 
-        for d in self.file_data:
-            if len(str(d)) <= 3:
-                if(int(d) not in self.groups):
-                    print("Group label " + str(int(d)) + " is not in group list " + str(self.groups))
-                    self.groups.append(int(d))
-                    
-                    print("Creating group collection.")
+            # If the tract group has not been created yet, create it and add the curve:
+            if(int(g[1]) not in groups):
+                print("Collection with tract ID [" + str(int(g[1])) + "] does not exist. ")
 
-                    new_collection = bpy.data.collections.new(name="Tract " + str(d))
-                    bpy.context.scene.collection.children.link(new_collection) 
-                    new_collection.objects.link(current_curve)
-                    bpy.context.collection.objects.unlink(current_curve) # remove from default collection
+                groups.append(int(g[1]))                
+                print("Created group collection with ID [" + str(int(g[1])) + "]")
 
-                    print("Added " + str(current_curve) + " to " + str(new_collection))
+                new_collection = bpy.data.collections.new(name="Tract " + str(g[1]))
+                bpy.context.scene.collection.children.link(new_collection) 
+                new_collection.objects.link(current_curve)
+                bpy.context.collection.objects.unlink(current_curve) # remove from default collection
+                print("Added " + str(current_curve) + " to " + str(new_collection) + "\n")
 
-                else:
-                    new_collection.objects.link(current_curve)
-                    bpy.context.collection.objects.unlink(current_curve) # remove from default collection
-                    print("Added " + str(current_curve) + " to " + str(new_collection))
-
+            # If the tract group already is created, add the curve:
             else:
-                context.view_layer.objects.active = self.makeCurve(d)
-                current_curve = context.view_layer.objects.active
-                
-
-        self.updateCalculations(context)
+                new_collection.objects.link(current_curve)
+                bpy.context.collection.objects.unlink(current_curve) # remove from default collection
+                print("Added " + str(current_curve) + " to " + str(new_collection) + "\n")
 
         print("Connectome plotting completed!")
+
         return {'FINISHED'}
 
     def makeCurve(self, vertices):
+        # Create spline data
         curveData = bpy.data.curves.new('myCurve', type='CURVE')
         curveData.dimensions = '3D'
         curveObj = curveData.splines.new('NURBS')
         
+        # Get coordinates to plot
         coords3d = self.getTractCoords(vertices)
 
+        # Plot vectors on curve
         curveObj.points.add(len(coords3d))
         for i in coords3d:
             for i, coords in enumerate(coords3d):
                 x,y,z = coords
                 curveObj.points[i].co = (x, y, z, 1)
 
+        # Create curve object from spline
         curve = bpy.data.objects.new('Tract Curve', curveData)
-        bpy.context.collection.objects.link(curve) # add to default collection for active object tracking, is removed in next steps
+
+        # Temporarily add curve to default collection, so it is the active object
+        bpy.context.collection.objects.link(curve)
         
         return curve
 
     def getTractCoords(self, tract):
-        coords_list = re.findall(r"((\d+(\.\d*)?\s){3})", tract)       # get all 3D coordinates from tract data
+        # Get all 3D coordinates for curve from data
+        coords_list = re.findall(r"((\d+(\.\d*)?\s){3})", tract)
         tract_vertices = []
 
+        # Extract vector coordinates from tract curve data
         for i in range(0, len(coords_list)):
             coords = coords_list[i][0].split()
             vertex = []
-            for c in range(0, len(coords)):       # convert coordinates from str to int
+
+            # Create list of vector integers from data strings
+            for c in range(0, len(coords)):
                 coordsFloat = float(coords[c])
                 if len(vertex) == 2:
                     vertex.append(coordsFloat)
                     tract_vertices.append(tuple((vertex[0],vertex[1],vertex[2],)))
-                    print("Vector " + str(i) + ": " + str(vertex))
+                  # Uncomment for verbose vector plotting:  
+                  # print("Vector " + str(i) + ": " + str(vertex))
                     vertex = []
                 else:
                     vertex.append(coordsFloat)
 
         return tract_vertices
 
-    def updateCalculations(self, context):
-        context.scene.group_count = len(self.groups)
-        context.scene.tract_count = len(self.file_data)
-        context.scene.vertex_count = len(self.getTractCoords(str(self.file_data)))
-
-        return
