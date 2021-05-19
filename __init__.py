@@ -29,7 +29,7 @@ from . c2b_plot_tracts import *
 from . c2b_parser import *
 from . c2b_panel import *
 
-# I think it would be better to use import_helper instead of this (zocker_160)
+# I think it would be better to use import_helper instead of this - zocker_160
 bpy.types.Scene.tract_file = StringProperty(name="Tract source file", 
                subtype="FILE_PATH", 
                description="Location of the tract source file in UTF-8 plaintext format")
