@@ -51,9 +51,10 @@ class PlotTracts(bpy.types.Operator):
         
         # Get coordinates to plot
         coords3d = self.getTractCoords(vertices)
-
+        print(coords3d)
+        
         # Plot vectors on curve
-        curveObj.points.add(len(coords3d))
+        curveObj.points.add(len(coords3d)-1)        # subtract one from length to fix zero-indexing issue with enumeration in the "for" loop below
         for i in coords3d:
             for i, coords in enumerate(coords3d):
                 x,y,z = coords
