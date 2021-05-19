@@ -18,7 +18,7 @@ class Parser(bpy.types.Operator):
         return curves
 
     def updateCalculations(self):
-        data = self.getCurves() # WHY DOES THIS PASS AN EXTRA ARGUMENT???
+        data = self.getCurves()
 
         bpy.context.scene.tract_count = int(data[-1][1])
         bpy.context.scene.curve_count = len(data)
