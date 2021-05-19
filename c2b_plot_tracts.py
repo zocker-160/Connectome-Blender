@@ -59,10 +59,9 @@ class PlotTracts(bpy.types.Operator):
         
         # Plot vectors on curve
         curveObj.points.add(len(coords3d)-1)        # subtract one from length because one point already exists (add needs the number of _new_ points)
-        for i in coords3d:
-            for i, coords in enumerate(coords3d):
-                x,y,z = coords
-                curveObj.points[i].co = (x, y, z, 1)
+        for i, coords in enumerate(coords3d):
+            x,y,z = coords
+            curveObj.points[i].co = (x, y, z, 1)
 
         # Create curve object from spline
         curve = bpy.data.objects.new('Tract Curve', curveData)
