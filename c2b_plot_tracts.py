@@ -55,7 +55,7 @@ class PlotTracts(bpy.types.Operator):
         
         # Get coordinates to plot
         coords3d = self.getTractCoords(vertices)
-        print(coords3d)
+        #print(coords3d)
         
         # Plot vectors on curve
         curveObj.points.add(len(coords3d)-1)        # subtract one from length because one point already exists (add needs the number of _new_ points)
