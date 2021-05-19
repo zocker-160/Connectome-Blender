@@ -15,7 +15,7 @@ class Panel(bpy.types.Panel):
             row.operator('c2b.import', text="Import file", icon='IMPORT')
 
             row = layout.row()
-            row.prop(context.scene, '["tract_file"]', text="Filepath")
+            row.prop(context.scene, 'tract_file', text="Filepath")
 
             row = layout.row()
             row.label(text=f'Tracts: {context.scene.get("tract_count")}')
