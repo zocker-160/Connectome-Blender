@@ -1,9 +1,5 @@
-import importlib
 import bpy
-import re
-
 from mathutils import Vector
-from . import c2b_parser
 
 class PlotTracts(bpy.types.Operator):
     bl_idname = "c2b.plot_tracts"
@@ -13,7 +9,6 @@ class PlotTracts(bpy.types.Operator):
     def execute(self, context: bpy.types.Context):
         # Reset group variable and open/parse curve data:
         groups = []
-        #curves = c2b_parser.Parser.getCurves(c2b_parser.Parser)
         curves = context.scene.get("curve_data")
         if not curves: raise ReferenceError("Please calculate tract data first")
 
