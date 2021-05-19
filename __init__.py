@@ -19,7 +19,7 @@ bl_info = {
     "version" : (0, 0, 3),
     "location" : "View3D",
     "warning" : "",
-    "category" : "Generic"
+    "category" : "Import"
 }
 
 import bpy
