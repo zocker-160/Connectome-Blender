@@ -123,3 +123,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Kate directory files
+.directory
+
+# sample files
+sample\ files
