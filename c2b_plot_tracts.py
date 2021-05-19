@@ -45,7 +45,7 @@ class PlotTracts(bpy.types.Operator):
 
         return {'FINISHED'}
 
-    def makeCurve(self, vertices):
+    def makeCurve(self, vertices: str):
         # Create spline data
         curveData = bpy.data.curves.new('myCurve', type='CURVE')
         curveData.dimensions = '3D'
