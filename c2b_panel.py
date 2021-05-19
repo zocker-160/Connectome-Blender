@@ -11,7 +11,6 @@ class Panel(bpy.types.Panel):
             layout = self.layout
 
             row = layout.row()
-            #row.prop(context.scene, "tract_file", text="")
             row.operator('c2b.import', text="Import file", icon='IMPORT')
 
             row = layout.row()
