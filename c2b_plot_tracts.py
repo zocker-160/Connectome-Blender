@@ -19,29 +19,31 @@ class PlotTracts(bpy.types.Operator):
 
         # Plot each dataset retrieved from the file data's regex results:
         for g in curves:
+            g1 = int(g[1])
+
             # Plot curve:
-            print(f'Now plotting a curve in tract ID ["{g[1]}"], using vector set:\n {g[0]}')
+            print(f'Now plotting a curve in tract ID ["{g1}"], using vector set:\n {g[0]}')
             context.view_layer.objects.active = self.makeCurve(g[0])
             current_curve = context.view_layer.objects.active
 
             # If the tract group has not been created yet, create it and add the curve:
-            if(int(g[1]) not in groups):
-                print("Collection with tract ID [" + str(int(g[1])) + "] does not exist. ")
+            if g1 not in groups:
+                print(f'Collection with tract ID ["{g1}"] does not exist. ')
 
                 groups.append(int(g[1]))                
-                print("Created group collection with ID [" + str(int(g[1])) + "]")
+                print(f'Created group collection with ID ["{g1}"]')
 
-                new_collection = bpy.data.collections.new(name="Tract " + str(g[1]))
+                new_collection = bpy.data.collections.new(name=f"Tract {g1}")
                 bpy.context.scene.collection.children.link(new_collection) 
                 new_collection.objects.link(current_curve)
                 bpy.context.collection.objects.unlink(current_curve) # remove from default collection
-                print("Added " + str(current_curve) + " to " + str(new_collection) + "\n")
+                print(f"Added {current_curve} to {new_collection}\n")
 
             # If the tract group already is created, add the curve:
             else:
                 new_collection.objects.link(current_curve)
                 bpy.context.collection.objects.unlink(current_curve) # remove from default collection
-                print("Added " + str(current_curve) + " to " + str(new_collection) + "\n")
+                print(f"Added {current_curve} to {new_collection} \n")
 
         print("Connectome plotting completed!")
 
