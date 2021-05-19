@@ -7,8 +7,7 @@ class Parser(bpy.types.Operator):
     bl_description = "Count the source file's tract groups, individual tracts, and tract curve vectors."
 
     def execute(self, context):
-        self.updateCalculations()
-        return {'FINISHED'}
+        return self.updateCalculations()
 
     def getCurves(self):
         tract_file = open(bpy.context.scene.tract_file,"r").read()
@@ -20,8 +19,9 @@ class Parser(bpy.types.Operator):
     def updateCalculations(self):
         data = self.getCurves()
 
-        bpy.context.scene.tract_count = int(data[-1][1])
-        bpy.context.scene.curve_count = len(data)
+        bpy.context.scene["tract_count"] = data[-1][1]
+        bpy.context.scene["curve_count"] = len(data)
+        
         # context.scene.vertex_count = len(re.findall(r"((\d+(\.\d*)?\s){3})", tract_file))
         
         return {'FINISHED'}

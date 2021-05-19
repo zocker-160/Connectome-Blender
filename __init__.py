@@ -29,21 +29,10 @@ from . c2b_plot_tracts import *
 from . c2b_parser import *
 from . c2b_panel import *
 
+# I think it would be better to use import_helper instead of this (zocker_160)
 bpy.types.Scene.tract_file = StringProperty(name="Tract source file", 
                subtype="FILE_PATH", 
                description="Location of the tract source file in UTF-8 plaintext format")
-
-bpy.types.Scene.tract_count = IntProperty(name="Tract count", 
-               subtype="UNSIGNED", 
-               description="The total count of all tract groups.")
-
-bpy.types.Scene.curve_count = IntProperty(name="Curve count", 
-               subtype="UNSIGNED", 
-               description="The total count of all curves in respective tracts.")
-
-bpy.types.Scene.vertex_count = IntProperty(name="Vertex count", 
-               subtype="UNSIGNED", 
-               description="The total count of all vertices in all tracts.")
 
 classes = (PlotTracts, Parser, Panel)
 
