@@ -25,7 +25,7 @@ class PlotTracts(bpy.types.Operator):
             if g1 not in groups:
                 print(f'Collection with tract ID ["{g1}"] does not exist. ')
 
-                groups.append(int(g[1]))                
+                groups.append(g1)                
                 print(f'Created group collection with ID ["{g1}"]')
 
                 new_collection = bpy.data.collections.new(name=f"Tract {g1}")
