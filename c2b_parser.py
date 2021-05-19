@@ -21,7 +21,10 @@ class Parser(bpy.types.Operator):
 
         bpy.context.scene["tract_count"] = data[-1][1]
         bpy.context.scene["curve_count"] = len(data)
-        
+
+        # save curve-data
+        bpy.context.scene["curve_data"] = data
+
         # context.scene.vertex_count = len(re.findall(r"((\d+(\.\d*)?\s){3})", tract_file))
         
         return {'FINISHED'}

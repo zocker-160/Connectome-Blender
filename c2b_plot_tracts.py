@@ -8,15 +8,17 @@ class PlotTracts(bpy.types.Operator):
     bl_label = "Plot Tracts"
     bl_description = "Plot tracts from connectome source file in bezier curves"
 
-    def execute(self, context):
+    def execute(self, context: bpy.types.Context):
         # Reset group variable and open/parse curve data:
         groups = []
-        curves = c2b_parser.Parser.getCurves(c2b_parser.Parser)
+        #curves = c2b_parser.Parser.getCurves(c2b_parser.Parser)
+        curves = context.scene.get("curve_data")
+        if not curves: raise ReferenceError("Please calculate tract data first")
 
         # Plot each dataset retrieved from the file data's regex results:
         for g in curves:
             # Plot curve:
-            print("Now plotting a curve in tract ID [" + str(g[1]) + "], using vector set:\n" + str(g[0]))
+            print(f'Now plotting a curve in tract ID ["{g[1]}"], using vector set:\n {g[0]}')
             context.view_layer.objects.active = self.makeCurve(g[0])
             current_curve = context.view_layer.objects.active
 
