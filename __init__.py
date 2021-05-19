@@ -34,6 +34,6 @@ bpy.types.Scene.tract_file = StringProperty(name="Tract source file",
                subtype="FILE_PATH", 
                description="Location of the tract source file in UTF-8 plaintext format")
 
-classes = (PlotTracts, Parser, Panel)
+classes = [PlotTracts, Parser, Panel]
 
 register, unregister = bpy.utils.register_classes_factory(classes)
