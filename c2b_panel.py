@@ -30,4 +30,4 @@ class Panel(bpy.types.Panel):
             row.operator('c2b.parse', text="Recalculate tract data")
 
             row = layout.row()
-            row.operator('c2b.plot_tracts', text="Plot tract as curves")
+            row.operator('c2b.plot_tracts', text="Plot tract as curves", icon='NORMALIZE_FCURVES')
