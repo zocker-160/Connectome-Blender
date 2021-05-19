@@ -1,6 +1,8 @@
 import importlib
 import bpy
 import re
+
+from mathutils import Vector
 from . import c2b_parser
 
 class PlotTracts(bpy.types.Operator):
@@ -70,27 +72,18 @@ class PlotTracts(bpy.types.Operator):
         
         return curve
 
-    def getTractCoords(self, tract):
-        # Get all 3D coordinates for curve from data
-        coords_list = re.findall(r"((\d+(\.\d*)?\s){3})", tract)
-        tract_vertices = []
+    def getTractCoords(self, tract: str):
+        tract_vertices = list()
+        vertex = list()
 
-        # Extract vector coordinates from tract curve data
-        for i in range(0, len(coords_list)):
-            coords = coords_list[i][0].split()
-            vertex = []
+        for i, coord in enumerate(tract.split(' ')):
+            try:
+                vertex.append(float(coord))
+            except ValueError:
+                continue
 
-            # Create list of vector integers from data strings
-            for c in range(0, len(coords)):
-                coordsFloat = float(coords[c])
-                if len(vertex) == 2:
-                    vertex.append(coordsFloat)
-                    tract_vertices.append(tuple((vertex[0],vertex[1],vertex[2],)))
-                  # Uncomment for verbose vector plotting:  
-                  # print("Vector " + str(i) + ": " + str(vertex))
-                    vertex = []
-                else:
-                    vertex.append(coordsFloat)
+            if (i+1) % 3 == 0:
+                tract_vertices.append( Vector(vertex) )
+                vertex.clear()
 
         return tract_vertices
-
